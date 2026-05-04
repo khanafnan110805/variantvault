@@ -1,0 +1,162 @@
+<%- include('layout/header', { pageTitle: 'Add Product' }) %>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <!-- Page Header -->
+  <div class="mb-8">
+    <a href="/products" class="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-vault-accent transition-colors duration-150 mb-4 font-mono">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Back to products
+    </a>
+    <h1 class="font-display font-700 text-3xl text-vault-text">Add New Product</h1>
+    <p class="text-vault-muted mt-1.5">Fill in the product name and add all size–quantity variants.</p>
+  </div>
+
+  <!-- Error message -->
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert-error mb-6" role="alert">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <%= error %>
+    </div>
+  <% } %>
+
+  <!-- Form Card -->
+  <div class="vault-card p-8">
+    <form action="/add" method="POST" id="addProductForm" novalidate>
+
+      <!-- Product Name -->
+      <div class="mb-8">
+        <label for="productName" class="form-label">Product Name <span class="text-red-400">*</span></label>
+        <input
+          type="text"
+          id="productName"
+          name="productName"
+          class="form-input"
+          placeholder="e.g. Air Max 90 Retro White"
+          required
+          autocomplete="off"
+          maxlength="255"
+        />
+        <p class="form-hint">Give your product a unique, recognisable name.</p>
+      </div>
+
+      <!-- Variants Section -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <label class="form-label mb-0">Variants <span class="text-red-400">*</span></label>
+            <p class="form-hint mt-0.5">Add one row per size you carry.</p>
+          </div>
+          <button type="button" id="addRowBtn" class="btn-primary btn-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add Variant
+          </button>
+        </div>
+
+        <!-- Column labels -->
+        <div class="grid grid-cols-[1fr_140px_44px] gap-3 mb-2 px-1">
+          <div class="text-xs font-mono font-medium text-gray-400 uppercase tracking-wider">Size</div>
+          <div class="text-xs font-mono font-medium text-gray-400 uppercase tracking-wider">Quantity</div>
+          <div></div>
+        </div>
+
+        <!-- Variant rows container -->
+        <div id="variantContainer" class="space-y-2.5">
+          <!-- Rows injected by JS -->
+        </div>
+
+        <!-- Empty state hint -->
+        <div id="emptyVariantHint" class="hidden text-center py-8 border-2 border-dashed border-vault-border rounded-xl mt-2">
+          <div class="w-10 h-10 bg-vault-accentLight rounded-full flex items-center justify-center mx-auto mb-2">
+            <svg class="w-5 h-5 text-vault-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+          </div>
+          <p class="text-sm text-gray-400">Click <strong class="text-vault-text">Add Variant</strong> to get started</p>
+        </div>
+      </div>
+
+      <!-- Variant count badge -->
+      <div class="flex items-center justify-between py-3 border-t border-vault-border mb-6">
+        <span class="font-mono text-sm text-gray-400">
+          <span id="variantCount">0</span> variant(s) added
+        </span>
+        <span class="font-mono text-sm text-gray-400">
+          Total units: <span id="totalUnits" class="text-vault-accent font-medium">0</span>
+        </span>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex gap-3">
+        <button type="submit" class="btn-primary btn-lg flex-1 justify-center" id="submitBtn">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Save Product
+        </button>
+        <a href="/products" class="btn-secondary btn-lg">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Variant Row Template (hidden, cloned by JS) -->
+<template id="variantRowTemplate">
+  <div class="variant-row grid grid-cols-[1fr_140px_44px] gap-3 items-start animate-fadeInUp">
+
+    <!-- Size dropdown wrapper -->
+    <div class="size-dropdown-wrapper relative">
+      <input
+        type="text"
+        class="size-search form-input"
+        placeholder="Search size (e.g. 9.5)"
+        autocomplete="off"
+      />
+      <!-- Hidden input carries the actual value -->
+      <input type="hidden" name="sizes[]" class="size-value" />
+      <!-- Dropdown list -->
+      <div class="size-dropdown absolute left-0 right-0 top-full mt-1 bg-white border border-vault-border rounded-xl shadow-lg z-40 max-h-48 overflow-y-auto hidden">
+        <!-- Options rendered by JS -->
+      </div>
+      <p class="size-error text-xs text-red-500 mt-1 hidden">Please select a valid size.</p>
+    </div>
+
+    <!-- Quantity input -->
+    <div>
+      <input
+        type="number"
+        name="quantities[]"
+        class="qty-input form-input"
+        placeholder="Qty"
+        min="1"
+        step="1"
+      />
+      <p class="qty-error text-xs text-red-500 mt-1 hidden">Min 1.</p>
+    </div>
+
+    <!-- Remove button -->
+    <button type="button" class="remove-row-btn h-[42px] w-[44px] flex items-center justify-center rounded-xl border border-vault-border text-gray-400 hover:bg-vault-dangerLight hover:border-red-300 hover:text-vault-danger transition-all duration-150" title="Remove row">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+</template>
+
+<script>
+  // Initialize form with one row on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    initVariantForm('addProductForm');
+    addVariantRow();
+    updateCounters();
+  });
+</script>
+
+<%- include('layout/footer') %>

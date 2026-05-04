@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' — VariantVault' : 'VariantVault' %></title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Syne (display) + DM Mono (data) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/css/styles.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            vault: {
+              bg: '#f5f7fa',
+              card: '#ffffff',
+              border: '#e5e7eb',
+              text: '#1F2937',
+              muted: '#374151',
+              accent: '#4F46E5',
+              accentDark: '#3730a3',
+              accentLight: '#eef2ff',
+              danger: '#dc2626',
+              dangerLight: '#fef2f2',
+              success: '#059669',
+              successLight: '#ecfdf5',
+            }
+          },
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            mono: ['DM Mono', 'monospace'],
+            body: ['DM Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-body bg-vault-bg text-vault-text min-h-screen flex flex-col">
+
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-vault-border sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3 group">
+          <div class="logo-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="36" height="36" rx="8" fill="#4F46E5"/>
+              <!-- Vault door -->
+              <circle cx="18" cy="18" r="10" fill="none" stroke="white" stroke-width="2"/>
+              <circle cx="18" cy="18" r="5" fill="white" opacity="0.9"/>
+              <!-- Spokes -->
+              <line x1="18" y1="8" x2="18" y2="11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="18" y1="25" x2="18" y2="28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="8" y1="18" x2="11" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="25" y1="18" x2="28" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <!-- Handle -->
+              <line x1="22" y1="18" x2="28" y2="14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <!-- V mark inside -->
+              <path d="M15.5 16.5 L18 20.5 L20.5 16.5" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <span class="font-display font-700 text-xl text-vault-text tracking-tight group-hover:text-vault-accent transition-colors duration-200">
+            Variant<span class="text-vault-accent">Vault</span>
+          </span>
+        </a>
+
+        <!-- Nav Links -->
+        <div class="flex items-center gap-2">
+          <a href="/products" class="nav-link">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            Products
+          </a>
+          <a href="/add" class="btn-primary flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add Product
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page content starts here -->
+  <main class="flex-1">

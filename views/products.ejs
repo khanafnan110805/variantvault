@@ -1,0 +1,116 @@
+<%- include('layout/header', { pageTitle: 'Products' }) %>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div>
+      <h1 class="font-display font-700 text-3xl text-vault-text">Your Products</h1>
+      <p class="text-vault-muted mt-1">
+        <% if (products.length > 0) { %>
+          <%= products.length %> product<%= products.length !== 1 ? 's' : '' %> in your vault
+        <% } else { %>
+          No products yet
+        <% } %>
+      </p>
+    </div>
+    <a href="/add" class="btn-primary self-start sm:self-auto">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Add Product
+    </a>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="mb-6">
+    <form action="/products" method="GET" class="relative max-w-md">
+      <input
+        type="text"
+        name="search"
+        value="<%= search %>"
+        placeholder="Search products..."
+        class="form-input"
+      />
+
+      <% if (search) { %>
+        <a href="/products" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+          ✕
+        </a>
+      <% } %>
+    </form>
+  </div>
+
+  <!-- Search result label -->
+  <% if (search) { %>
+    <div class="mb-4 text-sm font-mono text-gray-400">
+      Showing results for "<span class="text-vault-text font-medium"><%= search %></span>"
+      · <%= products.length %> found
+    </div>
+  <% } %>
+
+  <!-- Products Grid -->
+  <% if (products.length > 0) { %>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <% products.forEach((product, idx) => { %>
+
+        <div class="vault-card p-6 flex flex-col">
+
+          <h2 class="font-display font-600 text-base text-vault-text mb-3">
+            <%= product.name %>
+          </h2>
+
+          <div class="flex gap-4 mb-4">
+            <div>
+              <div><%= product.variant_count %></div>
+              <div class="text-xs">variants</div>
+            </div>
+            <div>
+              <div><%= product.total_stock %></div>
+              <div class="text-xs">units</div>
+            </div>
+          </div>
+
+          <div class="flex gap-2 mt-auto">
+            <a href="/product/<%= product.id %>" class="btn-accent">View</a>
+            <a href="/edit/<%= product.id %>" class="btn-ghost">Edit</a>
+
+            <form action="/delete/<%= product.id %>" method="POST" class="delete-form" data-name="<%= product.name %>">
+              <button type="submit" class="btn-danger">Delete</button>
+            </form>
+          </div>
+
+        </div>
+
+      <% }) %>
+    </div>
+
+  <% } else { %>
+
+    <div class="text-center py-20">
+      <% if (search) { %>
+        <h2>No results for "<%= search %>"</h2>
+        <a href="/products">Clear Search</a>
+      <% } else { %>
+        <h2>Your vault is empty</h2>
+        <a href="/add">Add Product</a>
+      <% } %>
+    </div>
+
+  <% } %>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll('.delete-form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+      const name = form.dataset.name;
+      if (!confirm(`Delete "${name}"?\n\nThis will permanently remove the product.`)) {
+        e.preventDefault();
+      }
+    });
+  });
+});
+</script>
+
+<%- include('layout/footer') %>
