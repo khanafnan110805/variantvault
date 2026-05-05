@@ -1,19 +1,20 @@
-const mysql = require("mysql2/promise");
-require("dotenv").config();
+const mysql = require("mysql2");
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "1234",
-  database: process.env.DB_NAME || "variantvault",
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT,
   waitForConnections: true,
   connectionLimit: 10,
 });
 
-// Initialize tables on startup
+const db = pool.promise();
+
 async function initDB() {
   try {
-    await pool.execute(`
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS products (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
@@ -21,7 +22,7 @@ async function initDB() {
       )
     `);
 
-    await pool.execute(`
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS variants (
         id INT AUTO_INCREMENT PRIMARY KEY,
         product_id INT NOT NULL,
@@ -39,4 +40,4 @@ async function initDB() {
 
 initDB();
 
-module.exports = pool;
+module.exports = db;
