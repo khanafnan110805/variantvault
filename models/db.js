@@ -32,9 +32,9 @@ async function initDB() {
       )
     `);
 
-    console.log("✦ Database tables ready");
+    console.log("Database tables ready");
   } catch (err) {
-    console.error("✦ Database init error:", err.message);
+    console.error("Database init error:", err.message);
   }
 }
 
